@@ -4,6 +4,8 @@
 
     public struct FilePanelsClient {
         public var openPanel: () -> URL?
+        public var read: @Sendable (URL) async throws -> String
+        public var readWithPanel: @Sendable () async throws -> String?
         public var savePanel: (SavePanelMetadata) -> URL?
         public var save: @Sendable (String, URL) async throws -> Void
         public var saveWithPanel: (SavePanelMetadata) -> Void
@@ -20,6 +22,17 @@
             return nil
         }
         return loadURL
+    }
+
+    private func _read(_ url: URL) async throws -> String {
+        try String(contentsOf: url)
+    }
+
+    private func _readWithPanel() async throws -> String? {
+        guard let url = _openPanel() else {
+            return nil
+        }
+        return try await _read(url)
     }
 
     private func _savePanel(_ metadata: SavePanelMetadata) -> URL? {
@@ -84,6 +97,8 @@
         public static var liveValue: Self {
             Self(
                 openPanel: { _openPanel() },
+                read: { try await _read($0) },
+                readWithPanel: { try await _readWithPanel() },
                 savePanel: { _savePanel($0) },
                 save: { try await _save(text: $0, url: $1) },
                 saveWithPanel: { _saveWithPanel($0) }
@@ -96,5 +111,9 @@
             get { self[FilePanelsClient.self] }
             set { self[FilePanelsClient.self] = newValue }
         }
+    }
+
+    public enum FilePanelsClientError: Error, Equatable {
+        case openPanel
     }
 #endif
