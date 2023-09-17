@@ -28,6 +28,7 @@
         try String(contentsOf: url)
     }
 
+    @MainActor
     private func _readWithPanel() async throws -> String? {
         guard let url = _openPanel() else {
             return nil
