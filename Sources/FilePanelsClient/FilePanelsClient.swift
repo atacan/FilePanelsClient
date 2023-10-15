@@ -45,6 +45,7 @@
         savePanel.title = metadata.title
         savePanel.message = metadata.message
         savePanel.prompt = metadata.prompt
+        savePanel.nameFieldStringValue = metadata.nameFieldStringValue
         let response = savePanel.runModal()
         guard response == .OK, let saveURL = savePanel.url else {
             return nil
@@ -76,6 +77,7 @@
         let title: String
         let message: String
         let prompt: String
+        let nameFieldStringValue: String
         let allowedFileTypes: [String]
         let textToSave: String
 
@@ -83,12 +85,14 @@
             title: String = "Save Output as...",
             message: String = "Choose a file name and location to save the output",
             prompt: String = "Save",
+            nameFieldStringValue: String = "Untitled",
             allowedFileTypes: [String] = ["txt"],
             textToSave: String
         ) {
             self.title = title
             self.message = message
             self.prompt = prompt
+            self.nameFieldStringValue = nameFieldStringValue
             self.allowedFileTypes = allowedFileTypes
             self.textToSave = textToSave
         }
